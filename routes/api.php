@@ -22,3 +22,9 @@ Route::prefix('/register')->group(function () {
     Route::post('register', 'RegisterController@register');
     Route::post('verify-email', 'RegisterController@verifyEmail');
 });
+
+Route::post('login', 'LoginController@login');
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('logout', 'LoginController@logout');
+});
