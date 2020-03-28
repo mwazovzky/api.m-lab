@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/test', function () {
-    return 'testing...';
+Route::prefix('/register')->group(function () {
+    Route::post('register', 'RegisterController@register');
+    Route::post('verify-email', 'RegisterController@verifyEmail');
 });
