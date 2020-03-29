@@ -12,17 +12,13 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 use Exception;
 
-class RegisterController extends Controller
+class ResetPasswordController extends Controller
 {
-    public function register(Request $request)
+    public function sendCode(Request $request)
     {
         $attributes = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'email' => ['required', 'string', 'exists:users'],
         ]);
-
-        Redis::set('register-user' . $attributes['email'], json_encode($attributes), 'EX', 60 * 5);
 
         try {
             $code = 1111; // mt_rand(1000, 9999);
@@ -40,28 +36,29 @@ class RegisterController extends Controller
         ], 200);
     }
 
-    public function verifyEmail(Request $request)
+    public function resetPassword(Request $request)
     {
-        $params = $request->validate([
+        $attributes = $request->validate([
             'email' => ['required'],
             'code' => ['required'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
 
-        if (Redis::get('register-code' . $params['email']) !== $params['code']) {
+        if (Redis::get('register-code' . $attributes['email']) !== $attributes['code']) {
             return response()->json([
                 'message' => 'The given data was invalid.',
                 'errors' => ['code' => 'Invalid code']
             ], 422);
         }
 
-        $attributes = json_decode(Redis::get('register-user' . $params['email']), true);
+        $user = User::where('email', $attributes['email'])->first();
 
-        $user = User::create([
-            'name' => $attributes['name'],
-            'email' => $attributes['email'],
+        $user->update([
             'password' => Hash::make($attributes['password']),
         ]);
 
-        return new UserResource($user);
+        return response()->json([
+            'message' => 'Your email has been updated.',
+        ], 200);
     }
 }
