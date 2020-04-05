@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
-use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -46,10 +46,7 @@ class UsersController extends Controller
     {
         $attributes = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                Rule::in([$user->email]),
-            ],
+            'email' => ['required', Rule::in([$user->email])],
         ]);
 
         $user->update($attributes);

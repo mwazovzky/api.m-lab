@@ -36,4 +36,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function photos()
+    {
+        return $this->morphMany(Photo::class, 'entity');
+    }
+
+    public function getPhotoAttribute(): ?Photo
+    {
+        return $this->photos()->first();
+    }
+
+    public function updatePhoto(Photo $photo)
+    {
+        return $this->photos()->save($photo);
+    }
+
+    public function removePhoto()
+    {
+        return $this->photos()->delete();
+    }
 }

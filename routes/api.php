@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Resources\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/register')->group(function () {
@@ -22,8 +20,10 @@ Route::prefix('/reset-password')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::get('users/profile', 'UsersController@profile');
-
     Route::apiResources([
         'users' => 'UsersController',
     ]);
+    Route::get('users/{user}/photos', 'UsersPhotosController@show');
+    Route::post('users/{user}/photos', 'UsersPhotosController@store');
+    Route::delete('users/{user}/photos', 'UsersPhotosController@destroy');
 });
