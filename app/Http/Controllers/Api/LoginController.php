@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\User;
-use App\Http\Resources\User as UserResource;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;

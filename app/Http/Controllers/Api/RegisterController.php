@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\User;
+use App\Models\User;
 use App\Http\Resources\User as UserResource;
 use App\Mail\EmailConfirmationEmail;
 use App\Http\Controllers\Controller;
@@ -25,7 +25,7 @@ class RegisterController extends Controller
         Redis::set('register-user' . $attributes['email'], json_encode($attributes), 'EX', 60 * 5);
 
         try {
-            $code = 1111; // mt_rand(1000, 9999);
+            $code = 11111; // mt_rand(10000, 99999);
             Redis::set('register-code' . $attributes['email'], $code, 'EX', 60 * 5);
             Mail::to($attributes['email'])->send(new EmailConfirmationEmail($code));
         } catch (Exception $e) {
