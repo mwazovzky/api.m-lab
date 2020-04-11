@@ -10,6 +10,7 @@ class UserResource extends JsonResource
     {
         return array_merge(parent::toArray($request), [
             'photo' => new PhotoResource($this->photo),
+            'phones' => PhoneResource::collection($this->phones),
         ]);
     }
 }

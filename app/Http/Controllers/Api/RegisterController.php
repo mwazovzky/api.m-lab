@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
-use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserResource;
 use App\Mail\EmailConfirmationEmail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

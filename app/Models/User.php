@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->photos()->delete();
     }
+
+    public function phones()
+    {
+        return $this->hasMany(Phone::class);
+    }
 }
