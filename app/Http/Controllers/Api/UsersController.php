@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -30,24 +31,18 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $attributes = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users'],
-        ]);
+        $attributes = $request->validated();
 
         $user = User::create($attributes + ['password' => Hash::make('secret')]);
 
         return new UserResource($user);
     }
 
-    public function update(User $user, Request $request)
+    public function update(User $user, UserRequest $request)
     {
-        $attributes = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', Rule::in([$user->email])],
-        ]);
+        $attributes = $request->validated();
 
         $user->update($attributes);
 

@@ -18,6 +18,8 @@ Route::prefix('/reset-password')->group(function () {
     Route::post('reset-password', 'ResetPasswordController@resetPassword');
 });
 
+
+
 Route::middleware('auth:api')->group(function () {
     Route::get('users/profile', 'UsersController@profile');
     Route::apiResources([
@@ -29,3 +31,5 @@ Route::middleware('auth:api')->group(function () {
     Route::get('users/{user}/phones', 'UsersPhonesController@show');
     Route::post('users/{user}/phones', 'UsersPhonesController@update');
 });
+
+Route::get('roles', 'RolesController@index');
