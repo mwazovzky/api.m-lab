@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\UserFilters;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class UsersController extends Controller
 {
@@ -17,9 +17,9 @@ class UsersController extends Controller
         return new UserResource($request->user());
     }
 
-    public function index(Request $request)
+    public function index(Request $request, UserFilters $filters)
     {
-        $attributes = $request->validate([
+        $request->validate([
             'role' => 'sometimes|string|exists:roles,name',
             'roles' => 'sometimes|array',
             'roles.*' => 'int|exists:roles,id',
@@ -27,17 +27,10 @@ class UsersController extends Controller
 
         $usersPerPage = 10;
 
-        $query = User::query()->orderBy('created_at', 'DESC')->orderBy('name');
-
-        if (!empty($attributes['roles'])) {
-            $query = $query->whereIn('role_id', $attributes['roles']);
-        }
-
-        if (!empty($attributes['role'])) {
-            $query = $query->whereHas('role', function ($query) use ($attributes) {
-                return $query->where('name', $attributes['role']);
-            });
-        }
+        $query = User::query()
+            ->filter($filters)
+            ->orderBy('created_at', 'DESC')
+            ->orderBy('name');
 
         return UserResource::collection($query->paginate($usersPerPage));
     }
