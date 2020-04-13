@@ -11,6 +11,7 @@ class PostResource extends JsonResource
         return array_merge(parent::toArray($request), [
             'user' => new UserResource($this->user),
             'category' => new CategoryResource($this->category),
+            'tags' => TagResource::collection($this->tags),
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Post;
+use App\Models\Tag;
 use App\Http\Resources\PostResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
@@ -29,6 +30,8 @@ class PostsController extends Controller
         $attributes = $request->validated();
 
         $post = Post::create($attributes);
+        $tags = Tag::whereIn('name', $attributes['tags'])->get();
+        $post->tags()->sync($tags);
 
         return new PostResource($post);
     }
@@ -38,6 +41,8 @@ class PostsController extends Controller
         $attributes = $request->validated();
 
         $post->update($attributes);
+        $tags = array_map(fn ($item) => $item['id'], $attributes['tags']);
+        $post->tags()->sync($tags);
 
         return new PostResource($post);
     }

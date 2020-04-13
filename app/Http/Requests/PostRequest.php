@@ -23,23 +23,12 @@ class PostRequest extends FormRequest
      */
     public function rules()
     {
-        $post = $this->post;
-
         return [
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-            'body' => [
-                'required',
-                'string',
-            ],
-            'category_id' => [
-                'sometimes',
-                'nullable',
-                'exists:categories,id',
-            ],
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string'],
+            'category_id' => ['present', 'nullable', 'exists:categories,id'],
+            'tags' => ['present', 'array'],
+            'tags.*.id' => ['required', 'exists:tags,id'],
         ];
     }
 }

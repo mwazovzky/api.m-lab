@@ -20,10 +20,11 @@ Route::prefix('/reset-password')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::get('roles', 'RolesController@index');
-    Route::get('categories', 'CategoriesController@index');
     Route::get('users/profile', 'UsersController@profile');
     Route::apiResources([
         'users' => 'UsersController',
+        'categories' => 'CategoriesController',
+        'tags' => 'TagsController',
         'posts' => 'PostsController',
     ]);
     Route::get('users/{user}/photos', 'UsersPhotosController@show');
