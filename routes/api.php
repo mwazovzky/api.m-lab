@@ -33,3 +33,4 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::get('roles', 'RolesController@index');
+Route::get('categories', 'CategoriesController@index');
