@@ -18,12 +18,13 @@ Route::prefix('/reset-password')->group(function () {
     Route::post('reset-password', 'ResetPasswordController@resetPassword');
 });
 
-
-
 Route::middleware('auth:api')->group(function () {
+    Route::get('roles', 'RolesController@index');
+    Route::get('categories', 'CategoriesController@index');
     Route::get('users/profile', 'UsersController@profile');
     Route::apiResources([
         'users' => 'UsersController',
+        'posts' => 'PostsController',
     ]);
     Route::get('users/{user}/photos', 'UsersPhotosController@show');
     Route::post('users/{user}/photos', 'UsersPhotosController@store');
@@ -31,6 +32,3 @@ Route::middleware('auth:api')->group(function () {
     Route::get('users/{user}/phones', 'UsersPhonesController@show');
     Route::post('users/{user}/phones', 'UsersPhonesController@update');
 });
-
-Route::get('roles', 'RolesController@index');
-Route::get('categories', 'CategoriesController@index');
