@@ -52,4 +52,14 @@ class Post extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function photos()
+    {
+        return $this->morphMany(Photo::class, 'entity');
+    }
+
+    public function getPhotoAttribute()
+    {
+        return $this->photos()->where('is_primary', true)->first();
+    }
 }

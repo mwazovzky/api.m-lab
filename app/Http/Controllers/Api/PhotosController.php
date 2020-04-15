@@ -3,13 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Photo;
+use App\Filters\PhotoFilters;
 use App\Http\Resources\PhotoResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class PhotosController extends Controller
 {
+    public function index(PhotoFilters $filters)
+    {
+        $query = Photo::query()
+            ->filter($filters)
+            ->orderBy('created_at', 'DESC');
+
+        return PhotoResource::collection($query->get());
+    }
+
     public function show(Photo $photo)
     {
         return new PhotoResource($photo);
@@ -17,16 +27,14 @@ class PhotosController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'image' => ['required', 'file', 'mimes:jpeg', 'max:10000'],
+        $attributes = $request->validate([
+            'image' => ['required', 'file', 'mimes:jpeg,bmp,png', 'max:10000'],
+            'entity_type' => ['sometimes', 'string', Rule::in(array_keys(Photo::ENTITIES))],
+            'entity_id' => ['sometimes', 'int', Rule::exists($request->entity_type, 'id')],
+            'is_primary' => ['sometimes', 'bool'],
         ]);
 
-        $filename = uniqid() . '.jpg';
-        Storage::disk('public')->putFileAs(Photo::UPLOAD_PATH, $request->file('image'), $filename);
-
-        $photo = Photo::create([
-            'filename' => $filename,
-        ]);
+        $photo = Photo::create($attributes, $request->file('image'));
 
         return new PhotoResource($photo);
     }
@@ -34,16 +42,11 @@ class PhotosController extends Controller
     public function update(Photo $photo, Request $request)
     {
         $request->validate([
-            'image' => ['required', 'file', 'mimes:jpeg', 'max:10000'],
+            'image' => ['required', 'file', 'mimes:jpeg,bmp,png', 'max:10000'],
         ]);
 
-        Storage::disk('public')->delete(Photo::UPLOAD_PATH . '/' . $photo->filename);
-
-        $filename = uniqid() . '.jpg';
-        Storage::disk('public')->putFileAs(Photo::UPLOAD_PATH, $request->file('image'), $filename);
-
-        $photo->update([
-            'filename' => $filename,
+        $photo->update([], [
+            'image' => $request->file('image'),
         ]);
 
         return new PhotoResource($photo);

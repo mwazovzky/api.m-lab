@@ -43,28 +43,18 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function phones()
+    {
+        return $this->hasMany(Phone::class);
+    }
+
     public function photos()
     {
         return $this->morphMany(Photo::class, 'entity');
     }
 
-    public function getPhotoAttribute(): ?Photo
+    public function getPhotoAttribute()
     {
-        return $this->photos()->first();
-    }
-
-    public function updatePhoto(Photo $photo)
-    {
-        return $this->photos()->save($photo);
-    }
-
-    public function removePhoto()
-    {
-        return $this->photos()->delete();
-    }
-
-    public function phones()
-    {
-        return $this->hasMany(Phone::class);
+        return $this->photos()->where('is_primary', true)->first();
     }
 }

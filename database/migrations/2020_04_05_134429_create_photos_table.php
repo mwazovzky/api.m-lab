@@ -17,6 +17,7 @@ class CreatePhotosTable extends Migration
             $table->id();
             $table->string('filename');
             $table->nullableMorphs('entity');
+            $table->boolean('is_primary')->default(false);
             $table->timestamps();
         });
     }
