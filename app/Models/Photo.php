@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Facades\Image;
 use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -11,27 +12,39 @@ class Photo extends Model
 {
     use Filterable;
 
-    const UPLOAD_PATH = 'images';
+    const IMAGE_PATH = 'images';
+    const PREVIEW_PATH = 'preview';
 
     const ENTITIES = [
         'users' => User::class,
         'posts' => Post::class,
     ];
 
-
     protected $fillable = ['filename', 'entity_type', 'entity_id', 'is_primary'];
 
-    public function getUrlAttribute()
+    public function getImageAttribute()
     {
         $host = config('app.url');
 
-        return sprintf('%s/storage/%s/%s', $host, self::UPLOAD_PATH, $this->filename);
+        return sprintf('%s/storage/%s/%s', $host, self::IMAGE_PATH, $this->filename);
+    }
+
+    public function getPreviewAttribute()
+    {
+        $host = config('app.url');
+
+        return sprintf('%s/storage/%s/%s', $host, self::PREVIEW_PATH, $this->filename);
     }
 
     public static function create(array $attributes = [], UploadedFile $file): self
     {
         $filename = uniqid() . '.jpg';
-        Storage::disk('public')->putFileAs(self::UPLOAD_PATH, $file, $filename);
+
+        $image = Image::make($file);
+        Storage::disk('public')->put(Photo::IMAGE_PATH . '/' . $filename, $image);
+
+        $preview = Image::makePreview($file);
+        Storage::disk('public')->put(Photo::PREVIEW_PATH . '/' . $filename, $preview);
 
         return static::query()->create([
             'entity_type' => self::ENTITIES[$attributes['entity_type']],
@@ -43,10 +56,16 @@ class Photo extends Model
 
     public function update(array $attributes = [], array $options = [])
     {
-        Storage::disk('public')->delete(self::UPLOAD_PATH . '/' . $this->filename);
-
+        $file = $options['image'];
         $filename = uniqid() . '.jpg';
-        Storage::disk('public')->putFileAs(self::UPLOAD_PATH, $options['image'], $filename);
+
+        Storage::disk('public')->delete(self::IMAGE_PATH . '/' . $this->filename);
+        $image = Image::make($file);
+        Storage::disk('public')->put(Photo::IMAGE_PATH . '/' . $filename, $image);
+
+        Storage::disk('public')->delete(self::PREVIEW_PATH . '/' . $this->filename);
+        $preview = Image::makePreview($file);
+        Storage::disk('public')->put(Photo::PREVIEW_PATH . '/' . $filename, $preview);
 
         return parent::update([
             'filename' => $filename,
@@ -55,7 +74,7 @@ class Photo extends Model
 
     public function delete()
     {
-        Storage::disk('public')->delete(Photo::UPLOAD_PATH . '/' . $this->filename);
+        Storage::disk('public')->delete(Photo::IMAGE_PATH . '/' . $this->filename);
 
         parent::delete();
     }
