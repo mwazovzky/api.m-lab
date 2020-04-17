@@ -19,6 +19,7 @@ class PostsController extends Controller
             'category' => 'sometimes|string',
             'tags' => 'sometimes|array',
             'tags.*' => 'required|string',
+            'favorite' => 'sometimes:bool',
         ]);
 
         $limit = 20;

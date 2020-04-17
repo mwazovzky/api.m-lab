@@ -57,4 +57,9 @@ class User extends Authenticatable
     {
         return $this->photos()->where('is_primary', true)->first();
     }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

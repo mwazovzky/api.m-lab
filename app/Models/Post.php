@@ -63,4 +63,14 @@ class Post extends Model
     {
         return $this->photos()->where('is_primary', true)->first();
     }
+
+    public function favorites()
+    {
+        return $this->morphMany(Favorite::class, 'favorite');
+    }
+
+    public function isFavorite(User $user = null): bool
+    {
+        return $this->favorites()->where('user_id', $user ? $user->id : null)->exists();
+    }
 }

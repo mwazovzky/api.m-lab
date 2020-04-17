@@ -57,8 +57,16 @@ class PostFilters extends Filters
     /**
      * Filter favorite posts.
      */
-    protected function favorite()
+    protected function favorite(bool $value)
     {
-        //
+        if (!$value) {
+            return;
+        }
+
+        $user = auth()->user();
+
+        $this->builder->whereHas('favorites', function ($query) use ($user) {
+            $query->where('user_id', $user ? $user->id : null);
+        });
     }
 }

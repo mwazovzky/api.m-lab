@@ -32,4 +32,6 @@ Route::middleware('auth:api')->group(function () {
         'photos' => 'PhotosController',
         'posts' => 'PostsController',
     ]);
+    Route::post('favorites/{model}/{id}', 'FavoritesController@store');
+    Route::delete('favorites/{model}/{id}', 'FavoritesController@destroy');
 });

@@ -23,7 +23,7 @@ class CreateTagsTable extends Migration
             $table->unsignedBigInteger('tag_id');
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
             $table->morphs('taggable');
-            $table->primary(['tag_id', 'taggable_id', 'taggable_type']);
+            $table->unique(['tag_id', 'taggable_type', 'taggable_id']);
         });
     }
 
