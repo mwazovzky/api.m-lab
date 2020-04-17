@@ -18,18 +18,20 @@ Route::prefix('/reset-password')->group(function () {
     Route::post('reset-password', 'ResetPasswordController@resetPassword');
 });
 
-
-
 Route::middleware('auth:api')->group(function () {
+    // Symfony bug - handling file validation on PUT requests
+    Route::post('photos/{photo}', 'PhotosController@update');
     Route::get('users/profile', 'UsersController@profile');
-    Route::apiResources([
-        'users' => 'UsersController',
-    ]);
-    Route::get('users/{user}/photos', 'UsersPhotosController@show');
-    Route::post('users/{user}/photos', 'UsersPhotosController@store');
-    Route::delete('users/{user}/photos', 'UsersPhotosController@destroy');
     Route::get('users/{user}/phones', 'UsersPhonesController@show');
     Route::post('users/{user}/phones', 'UsersPhonesController@update');
+    Route::apiResources([
+        'roles' => 'RolesController',
+        'users' => 'UsersController',
+        'categories' => 'CategoriesController',
+        'tags' => 'TagsController',
+        'photos' => 'PhotosController',
+        'posts' => 'PostsController',
+    ]);
+    Route::post('favorites/{model}/{id}', 'FavoritesController@store');
+    Route::delete('favorites/{model}/{id}', 'FavoritesController@destroy');
 });
-
-Route::get('roles', 'RolesController@index');
