@@ -19,7 +19,7 @@ trait Taggable
     /**
      * Get tags attached to the post.
      *
-     * @return Illuminate\Database\Eloquent\Relations\belongsToMany
+     * @return Illuminate\Database\Eloquent\Relations\morphToMany
      */
     public function tags()
     {

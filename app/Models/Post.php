@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Taggable;
+use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Post extends Model
 {
-    use Taggable;
+    use Taggable, Filterable;
 
     protected $fillable = ['title', 'body', 'category_id'];
 

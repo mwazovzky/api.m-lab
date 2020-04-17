@@ -12,7 +12,7 @@ class TagsController extends Controller
 {
     public function index()
     {
-        $query = Tag::query()->orderBy('name');
+        $query = Tag::query()->orderBy('name')->withCount('posts');
 
         return TagResource::collection($query->get());
     }

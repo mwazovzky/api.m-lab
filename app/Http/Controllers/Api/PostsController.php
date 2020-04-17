@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\PostFilters;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Http\Resources\PostResource;
@@ -11,13 +12,22 @@ use Illuminate\Http\Request;
 
 class PostsController extends Controller
 {
-    public function index()
+    public function index(Request $request, PostFilters $filters)
     {
-        $itemsPerPage = 20;
+        $attributes = $request->validate([
+            'search' => 'sometimes|string',
+            'category' => 'sometimes|string',
+            'tags' => 'sometimes|array',
+            'tags.*' => 'required|string',
+        ]);
 
-        $query = Post::query()->orderBy('created_at', 'DESC');
+        $limit = 20;
 
-        return PostResource::collection($query->paginate($itemsPerPage));
+        $query = Post::query()
+            ->filter($filters)
+            ->orderBy('created_at', 'DESC');
+
+        return PostResource::collection($query->paginate($limit));
     }
 
     public function show(Post $post)

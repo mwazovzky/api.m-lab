@@ -20,12 +20,12 @@ class UsersController extends Controller
     public function index(Request $request, UserFilters $filters)
     {
         $request->validate([
-            'role' => 'sometimes|string|exists:roles,name',
+            'role' => 'sometimes|string',
             'roles' => 'sometimes|array',
-            'roles.*' => 'int|exists:roles,id',
+            'roles.*' => 'int',
         ]);
 
-        $usersPerPage = 10;
+        $usersPerPage = 20;
 
         $query = User::query()
             ->filter($filters)
