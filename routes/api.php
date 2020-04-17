@@ -35,3 +35,5 @@ Route::middleware('auth:api')->group(function () {
     Route::post('favorites/{model}/{id}', 'FavoritesController@store');
     Route::delete('favorites/{model}/{id}', 'FavoritesController@destroy');
 });
+
+Route::post('feedback', 'FeedbackController@store');
