@@ -36,7 +36,7 @@ class PhotosTest extends TestCase
         $response->assertStatus(201);
         tap($post->fresh(), function ($post) {
             $this->assertCount(1, $post->photos);
-            Storage::disk('public')->assertExists(Photo::UPLOAD_PATH . '/' . $post->photos()->first()->filename);
+            Storage::disk('public')->assertExists(Photo::IMAGE_PATH . '/' . $post->photos()->first()->filename);
         });
     }
 
@@ -49,8 +49,8 @@ class PhotosTest extends TestCase
         $filename = 'image.jpg';
         $photo = factory(Photo::class)->create(['filename' => $filename]);
         Storage::fake('public');
-        Storage::disk('public')->putFileAs(Photo::UPLOAD_PATH, UploadedFile::fake()->image('image.jpg'), $filename);
-        Storage::disk('public')->assertExists(Photo::UPLOAD_PATH . '/' . 'image.jpg');
+        Storage::disk('public')->putFileAs(Photo::IMAGE_PATH, UploadedFile::fake()->image('image.jpg'), $filename);
+        Storage::disk('public')->assertExists(Photo::IMAGE_PATH . '/' . 'image.jpg');
         $this->assertEquals('image.jpg', $photo->filename);
 
         $response = $this->actingAs($user, 'api')->json('POST', '/api/photos/' . $photo->id, [
@@ -60,9 +60,9 @@ class PhotosTest extends TestCase
         $response->assertStatus(200);
 
         tap($photo->fresh()->filename, function ($filename) {
-            Storage::disk('public')->assertMissing(Photo::UPLOAD_PATH . '/' . 'image.jpg');
+            Storage::disk('public')->assertMissing(Photo::IMAGE_PATH . '/' . 'image.jpg');
             $this->assertNotEquals('image.jpg', $filename);
-            Storage::disk('public')->assertExists(Photo::UPLOAD_PATH . '/' . $filename);
+            Storage::disk('public')->assertExists(Photo::IMAGE_PATH . '/' . $filename);
         });
     }
 
@@ -75,12 +75,12 @@ class PhotosTest extends TestCase
         $filename = 'fake-image.jpg';
         $photo = factory(Photo::class)->create(['filename' => $filename]);
         Storage::fake('public');
-        Storage::disk('public')->putFileAs(Photo::UPLOAD_PATH, UploadedFile::fake()->image('image.jpg'), $filename);
-        Storage::disk('public')->assertExists(Photo::UPLOAD_PATH . '/' . $filename);
+        Storage::disk('public')->putFileAs(Photo::IMAGE_PATH, UploadedFile::fake()->image('image.jpg'), $filename);
+        Storage::disk('public')->assertExists(Photo::IMAGE_PATH . '/' . $filename);
 
         $response = $this->actingAs($user, 'api')->json('DELETE', '/api/photos/' . $photo->id);
 
         $response->assertStatus(200);
-        Storage::disk('public')->assertMissing(Photo::UPLOAD_PATH . '/' . $filename);
+        Storage::disk('public')->assertMissing(Photo::IMAGE_PATH . '/' . $filename);
     }
 }
