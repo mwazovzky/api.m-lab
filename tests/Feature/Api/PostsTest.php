@@ -20,7 +20,7 @@ class PostsTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
-        $post = factory(Post::class)->create();
+        $post = factory(Post::class)->create(['user_id' => $user->id]);
         $tags = [
             factory(Tag::class)->create(['name' => 'PHP'])->toArray(),
             factory(Tag::class)->create(['name' => 'Laravel'])->toArray(),

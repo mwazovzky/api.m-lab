@@ -63,7 +63,7 @@ class PostFilters extends Filters
             return;
         }
 
-        $user = auth()->user();
+        $user = auth('api')->user();
 
         $this->builder->whereHas('favorites', function ($query) use ($user) {
             $query->where('user_id', $user ? $user->id : null);
