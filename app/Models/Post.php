@@ -13,6 +13,10 @@ class Post extends Model
 
     protected $fillable = ['title', 'body', 'category_id'];
 
+    protected $casts = [
+        'user_id' => 'integer',
+    ];
+
     /**
      * Hook to model:created event to make a post slug.
      *

@@ -9,12 +9,13 @@ use App\Http\Resources\PostResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostsController extends Controller
 {
     public function index(Request $request, PostFilters $filters)
     {
-        $attributes = $request->validate([
+        $request->validate([
             'search' => 'sometimes|string',
             'category' => 'sometimes|string',
             'tags' => 'sometimes|array',
@@ -39,9 +40,10 @@ class PostsController extends Controller
     public function store(PostRequest $request)
     {
         $attributes = $request->validated();
-
-        $post = Post::create($attributes);
+        /** @var User $user */
+        $user = Auth::user();
         $tags = Tag::whereIn('name', $attributes['tags'])->get();
+        $post = $user->posts()->create($attributes);
         $post->tags()->sync($tags);
 
         return new PostResource($post);
@@ -49,6 +51,8 @@ class PostsController extends Controller
 
     public function update(Post $post, PostRequest $request)
     {
+        $this->authorize('update', $post);
+
         $attributes = $request->validated();
 
         $post->update($attributes);
@@ -60,6 +64,8 @@ class PostsController extends Controller
 
     public function destroy(Post $post)
     {
+        $this->authorize('update', $post);
+
         $post->delete();
 
         return response()->json(['status' => 'success'], 200);
