@@ -17,12 +17,13 @@ class UsersTest extends TestCase
     public function it_can_filter_users_by_role()
     {
         $role = factory(Role::class)->create(['name' => 'admin', 'description' => 'Administrator']);
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create(['role_id' => $role->id]);
         factory(User::class, 7)->create();
+        $role = factory(Role::class)->create(['name' => 'developer', 'description' => 'Developer']);
         factory(User::class, 2)->create(['role_id' => $role->id]);
 
         $response = $this->actingAs($user, 'api')->json('GET', '/api/users', [
-            'role' => 'admin',
+            'role' => 'developer',
         ]);
 
         $response->assertStatus(200);
@@ -35,8 +36,9 @@ class UsersTest extends TestCase
     public function it_can_filter_users_by_roles()
     {
         $role = factory(Role::class)->create(['name' => 'admin', 'description' => 'Administrator']);
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create(['role_id' => $role->id]);
         factory(User::class, 7)->create();
+        $role = factory(Role::class)->create(['name' => 'developer', 'description' => 'Developer']);
         factory(User::class, 2)->create(['role_id' => $role->id]);
 
         $response = $this->actingAs($user, 'api')->json('GET', '/api/users', [

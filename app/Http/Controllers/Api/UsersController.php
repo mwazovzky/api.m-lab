@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
-    public function profile(Request $request)
-    {
-        return new UserResource($request->user());
-    }
-
     public function index(Request $request, UserFilters $filters)
     {
         $request->validate([

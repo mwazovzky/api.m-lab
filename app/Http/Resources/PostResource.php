@@ -13,7 +13,7 @@ class PostResource extends JsonResource
             'category' => new CategoryResource($this->category),
             'tags' => TagResource::collection($this->tags),
             'photo' => new PhotoResource($this->photo),
-            'is_favorite' => $this->isFavorite(auth()->user()),
+            'is_favorite' => $this->isFavorite(auth('api')->user()),
         ]);
     }
 }

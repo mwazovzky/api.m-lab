@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $attributes = $request->validate([
-            'email' => ['required', 'string', 'email', 'max:255', 'exists:users'],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:6'],
         ]);
 
@@ -31,9 +32,7 @@ class LoginController extends Controller
             'api_token' => hash('sha256', $token),
         ])->save();
 
-        return response()->json([
-            'api_token' => $token,
-        ], 200);
+        return new UserResource($user, $token);
     }
 
     public function logout(Request $request)
