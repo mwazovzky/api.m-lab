@@ -2,6 +2,7 @@
 
 namespace App\Filters;
 
+use App\Models\Category;
 use Exception;
 
 class PostFilters extends Filters
@@ -27,10 +28,11 @@ class PostFilters extends Filters
     /**
      * Filter posts by category.
      */
-    protected function category(string $category)
+    protected function category(string $name)
     {
-        $this->builder->whereHas('category', function ($query) use ($category) {
-            $query->where('name', $category);
+        $this->builder->whereHas('category', function ($query) use ($name) {
+            $category = Category::where('name', $name)->first();
+            $query->whereIn('id', [$category->id, ...$category->siblings()->pluck('id')->toArray()]);
         });
     }
 
@@ -57,9 +59,9 @@ class PostFilters extends Filters
     /**
      * Filter favorite posts.
      */
-    protected function favorite(bool $value)
+    protected function favorite(string $value)
     {
-        if (!$value) {
+        if ($value == 'false') {
             return;
         }
 

@@ -9,6 +9,7 @@ Route::post('logout', 'LoginController@logout')->middleware('auth:api');
 Route::post('reset-password/send-code', 'ResetPasswordController@sendCode');
 Route::post('reset-password/reset-password', 'ResetPasswordController@resetPassword');
 
+Route::get('categories/tree', 'CategoriesController@tree');
 Route::apiResource('categories', 'CategoriesController')->only(['index', 'show']);
 Route::apiResource('tags', 'TagsController')->only(['index', 'show']);
 Route::apiResource('photos', 'PhotosController')->only(['index', 'show']);
