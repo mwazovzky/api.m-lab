@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Category;
+use App\Trees\CategoryTree;
 use Illuminate\Database\Seeder;
 
 class CategoriesTableSeeder extends Seeder
@@ -13,14 +13,47 @@ class CategoriesTableSeeder extends Seeder
     public function run()
     {
         $categories = [
-            ['name' => 'Development'],
-            ['name' => 'Testing'],
-            ['name' => 'Travel'],
-            ['name' => 'Personal'],
+            [
+                'name' => 'Software',
+                'children' => [
+                    [
+                        'name' => 'Development',
+                    ],
+                    [
+                        'name' => 'Testing',
+                    ],
+                    [
+                        'name' => 'Devops',
+                    ],
+                ]
+            ],
+            [
+                'name' => 'Travel',
+                'children' => [
+                    [
+                        'name' => 'America',
+                    ],
+                    [
+                        'name' => 'Europe',
+                        'children' => [
+                            [
+                                'name' => 'Spain',
+                            ],
+                            [
+                                'name' => 'France',
+                            ],
+                            [
+                                'name' => 'Austria',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'name' => 'Personal',
+            ],
         ];
 
-        foreach ($categories as $category) {
-            factory(Category::class)->create($category);
-        }
+        CategoryTree::create($categories);
     }
 }
