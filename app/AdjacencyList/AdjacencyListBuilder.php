@@ -32,7 +32,7 @@ class AdjacencyListBuilder
         $this->builder = new Builder($connection, new AdjacencyListGrammar($sql));
     }
 
-    public function get()
+    public function getQuery()
     {
         return $this->builder;
     }

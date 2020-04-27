@@ -28,11 +28,11 @@ class CategoryResource extends JsonResource
         return array_merge(parent::toArray($request) + [
             'children' => $this->when(
                 $this->appendChildren,
-                CategoryResourceCollection::make($this->children())->withChildren()
+                CategoryResourceCollection::make($this->children)->withChildren()
             ),
             'siblings' => $this->when(
                 $this->appendSiblings,
-                CategoryResourceCollection::make($this->siblings())
+                CategoryResourceCollection::make($this->siblings)
             ),
         ]);
     }

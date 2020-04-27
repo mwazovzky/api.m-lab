@@ -2,12 +2,21 @@
 
 namespace App\Models;
 
-use App\AdjacencyList\AdjacencyList;
+use App\Relations\ChildrenRelation;
+use App\Relations\SiblingsRelation;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    use AdjacencyList;
-
     protected $fillable = ['name', 'parent_id'];
+
+    public function children(): ChildrenRelation
+    {
+        return new ChildrenRelation($this);
+    }
+
+    public function siblings(): SiblingsRelation
+    {
+        return new SiblingsRelation($this);
+    }
 }
