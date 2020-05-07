@@ -1,0 +1,37 @@
+version: '3'
+services:
+    nginx:
+        container_name: nginx
+        build:
+            context: .
+            dockerfile: docker/nginx/Dockerfile
+        volumes:
+            - ./:/var/www
+        ports:
+            - 8080:80
+        depends_on:
+            - api
+
+    api:
+        container_name: api
+        build:
+            context: .
+            dockerfile: docker/api/Dockerfile
+        volumes:
+            - /var/www/vendor
+            - .:/var/www
+        environment: 
+            DB_PORT: 3306
+            DB_HOST: database
+
+    database:
+        container_name: database
+        image: mysql:latest
+        environment: 
+            - MYSQL_ROOT_PASSWORD
+            - MYSQL_DATABASE
+            - MYSQL_USER
+            - MYSQL_PASSWORD
+        ports:
+            - 3306:3306
+            

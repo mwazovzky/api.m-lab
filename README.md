@@ -13,5 +13,23 @@ php artisan migrate
 ```
 composer require laravel/ui
 php artisan ui vue --auth
-    npm install && npm run dev
+npm install && npm run dev
+```
+
+## Run app: dev environment
+```
+export MYSQL_ROOT_PASSWORD=root
+export MYSQL_DATABASE=homestead
+export MYSQL_USER=homestead
+export MYSQL_PASSWORD=secret
+docker-compose up -d
+docker exec -it api php artisan migrate
+docker exec -it api php artisan db:seed
+docker exec -it api php artisan storage:link
+```
+
+## Run app: tests
+```
+docker-compose up -d
+docker exec -it api php artisan test
 ```

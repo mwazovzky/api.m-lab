@@ -1,11 +1,15 @@
+/.vscode
 /node_modules
 /public/hot
 /public/storage
 /storage/*.key
 /vendor
 .env
+.env.prod
 .env.backup
 .phpunit.result.cache
+start.sh
+deploy.sh
 Homestead.json
 Homestead.yaml
 npm-debug.log
