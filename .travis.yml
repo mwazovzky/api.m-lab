@@ -1,0 +1,12 @@
+sudo: required
+language: generic 
+services: 
+  - docker
+before_install:
+  - export MYSQL_ROOT_PASSWORD=root
+  - export MYSQL_DATABASE=homestead
+  - export MYSQL_USER=homestead
+  - export MYSQL_PASSWORD=secret
+  - docker-compose up -d
+script: 
+  - docker exec -it api php artisan test
